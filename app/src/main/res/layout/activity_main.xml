@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +21,7 @@
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:background="@android:color/darker_gray"
-            android:text="@string/button_logout" />
+            android:text="@string/button_logout"/>
 
         <Switch
             android:id="@+id/switch_mode"
@@ -32,7 +32,7 @@
             android:checked="false"
             android:text="@string/mode_text"
             android:textOff="@string/mode_home"
-            android:textOn="@string/mode_away" />
+            android:textOn="@string/mode_away"/>
     </RelativeLayout>
 
     <TextView
@@ -44,25 +44,16 @@
         android:layout_marginTop="20dp"
         android:text="@string/app_name"
         android:textSize="50sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="wrap_content"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <!--<Button
-            android:id="@+id/button_surveillance"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:background="@android:color/darker_gray"
-            android:text="icon here" />-->
 
         <ImageButton
             android:id="@+id/btnStartSurveillance"
@@ -70,7 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/start_surveillance" />
+            android:contentDescription="@string/startSurveillanceDesc"
+            android:src="@drawable/start_surveillance"/>
 
     </RelativeLayout>
 

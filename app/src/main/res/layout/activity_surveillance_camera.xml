@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,12 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:autoLink="web"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <WebView
         android:id="@+id/streamview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <ImageButton
         android:id="@+id/btnStopSurveillance"
@@ -26,6 +27,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="-70dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/stop_surveillance" />
+        android:contentDescription="@string/stopSurveillanceDesc"
+        android:src="@drawable/stop_surveillance"/>
 
 </LinearLayout>
