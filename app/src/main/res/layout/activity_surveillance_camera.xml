@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context="com.fyp.imranabdulhadi.safehome.SurveillanceCameraActivity">
 
+    <!--  -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,11 +16,14 @@
         android:autoLink="web"
         android:textStyle="bold"/>
 
+    <!-- Widget where the stream can be projected on -->
     <WebView
         android:id="@+id/streamview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:scrollbars="none"/>
 
+    <!-- Button to stop surveillance -->
     <ImageButton
         android:id="@+id/btnStopSurveillance"
         android:layout_width="wrap_content"
@@ -29,5 +33,4 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/stopSurveillanceDesc"
         android:src="@drawable/stop_surveillance"/>
-
 </LinearLayout>

@@ -126,15 +126,15 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     public void onResponse(String response) {
                         try {
 
-                            JSONObject modeResponse = new JSONObject(response);
-                            boolean error = modeResponse.getBoolean("error");
+                            JSONObject authResponse = new JSONObject(response);
+                            boolean error = authResponse.getBoolean("error");
 
                             if (!error) {
                                 pDialog.show();
 
-                                String email = modeResponse.getString("useremail");
-                                String name = modeResponse.getString("username");
-                                String position = modeResponse.getString("userposition");
+                                String email = authResponse.getString("useremail");
+                                String name = authResponse.getString("username");
+                                String position = authResponse.getString("userposition");
 
                                 user = new User(email, name, position);
                                 session.createLoginSession(user.getName(), user.getEmail(),

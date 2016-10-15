@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -15,32 +16,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Bundle;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Main Application screen
+ */
 public class MainActivity extends Activity implements View.OnClickListener {
 
     // Session Manager Class
     private SessionManager session;
 
+    // Layout widgets
     private ImageButton btnStartSurveillance;
-    private Button btnLogout;//, btnStartSurveillance;
+    private Button btnLogout;
     private Switch switchMode;
 
+    // Store the system's current mode
     private String mode;
+
+    // Progress Dialog
     private ProgressDialog pDialog;
 
+    // Store the user's detail temporarily
     private HashMap<String, String> user;
 
     @Override
@@ -52,18 +64,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         session = new SessionManager(getApplicationContext());
 
         btnLogout = (Button) findViewById(R.id.button_logout);
-        //btnStartSurveillance = (Button) findViewById(R.id.button_surveillance);
         btnStartSurveillance = (ImageButton) findViewById(R.id.btnStartSurveillance);
         switchMode = (Switch) findViewById(R.id.switch_mode);
         pDialog = new ProgressDialog(this);
 
-        /**
-         * Call this function whenever you want to check user login
-         * This will redirect user to LoginActivity is he is not
-         * logged in
-         * */
+        // Initialize the user's detail
         initializeUser();
 
+        // Retrieve the system's mode from the server and initialize it on the application
         retrieveMode();
         //initiateSurveillance();
 
@@ -80,20 +88,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
         moveTaskToBack(true);
     }
 
+    /**
+     * Initialize the user detail after they logged in
+     */
     private void initializeUser() {
 
+        /**
+         * Call this function whenever you want to check user login
+         * This will redirect user to LoginActivity is he is not
+         * logged in
+         * */
         session.checkLogin();
 
-        // get user data from session
+        // Get user data from session
         user = session.getUserDetails();
 
-        // name
+        // Get the user's name from the session
         String name = user.get(SessionManager.KEY_NAME);
 
-        // position
+        // Get the user's position from the session
         String position = user.get(SessionManager.KEY_POSITION);
 
-        if(position!=null)
+        if (position != null)
             if (!position.equals("Owner")) {
                 switchMode.setEnabled(false);
                 Toast.makeText(getApplicationContext(), "You are not authorized to change the system mode !", Toast.LENGTH_LONG).show();
@@ -101,9 +117,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 switchMode.setEnabled(true);
             }
 
-        ((TextView)findViewById(R.id.textView)).setText(Html.fromHtml("Name: " + name + "\nPosition: " + position));
+        ((TextView) findViewById(R.id.text_welcome)).setText(Html.fromHtml(name));
     }
 
+    /**
+     * Retrieve the current system's mode from the server
+     */
     private void retrieveMode() {
         String url = getApplicationContext().getString(R.string.raspberrypi_address) + getApplicationContext().getString(R.string.retrieve_mode);
         try {
@@ -157,6 +176,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Switch the system's mode to the ones the user change
+     */
     private void updateMode() {
         String url = getApplicationContext().getString(R.string.raspberrypi_address) + getApplicationContext().getString(R.string.update_mode);
 
@@ -172,13 +194,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                        try {
+                            JSONObject modeResponse = new JSONObject(response);
+                            String newMode = modeResponse.getString("Info");
+
+                            Toast.makeText(getApplicationContext(), newMode, Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Error: " + error.toString(), Toast.LENGTH_LONG).show();
+                        Log.e("MainActivity", "Login Error: " + error.getMessage());
+                        if (error instanceof NoConnectionError) {
+                            Toast.makeText(getApplicationContext(), "Error connecting to the server", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(getApplicationContext(), "Connection time out", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }) {
             @Override
@@ -223,6 +259,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         queue.add(postRequest);
     }
 
+    /**
+     * Start the surveillance activity
+     */
     private void startSurveillance() {
         Intent intent = new Intent(this, SurveillanceCameraActivity.class);
         startActivity(intent);

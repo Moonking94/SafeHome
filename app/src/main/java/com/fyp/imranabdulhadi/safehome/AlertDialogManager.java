@@ -9,6 +9,9 @@ import android.view.ContextThemeWrapper;
  * Created by Imran Abdulhadi on 10/13/2016.
  */
 
+/**
+ * Custom alert dialog
+ */
 public class AlertDialogManager {
     /**
      * Function to display simple Alert Dialog
