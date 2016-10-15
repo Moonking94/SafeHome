@@ -63,6 +63,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         // Login Button
         btnLogin = (Button) findViewById(R.id.button_login);
 
+        // Setup the progress dialog used when log in button is pressed
         pDialog = new ProgressDialog(this, ProgressDialog.THEME_HOLO_DARK);
         pDialog.setMessage("Please wait...");
         pDialog.setTitle("Authenticating");
@@ -149,6 +150,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                         error.getMessage(), Toast.LENGTH_LONG).show();
             }
         }) {
+            /**
+             * Use to POST the parameter to the server
+             * @return - return variable contains the user credentials
+             */
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
