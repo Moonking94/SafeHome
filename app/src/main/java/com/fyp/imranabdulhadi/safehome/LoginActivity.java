@@ -164,6 +164,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         queue.add(postRequest);
     }
 
+    /**
+     * Function: Open the main activity class or show error to the user
+     */
     private void logging() {
         if(user!=null){
 
