@@ -3,6 +3,7 @@ package com.fyp.imranabdulhadi.safehome;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.ContextThemeWrapper;
 
 /**
  * Created by Imran Abdulhadi on 10/13/2016.
@@ -18,7 +19,7 @@ public class AlertDialogManager {
      *               - pass null if you don't want icon
      **/
     public void showAlertDialog(Context context, String title, String message, Boolean status) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(context, android.R.style.Theme_Black)).create();
 
         // Setting Dialog title
         alertDialog.setTitle(title);

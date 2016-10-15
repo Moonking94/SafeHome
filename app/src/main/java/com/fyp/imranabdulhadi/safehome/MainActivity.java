@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     // Session Manager Class
     private SessionManager session;
 
-    private Button btnLogout, btnStartSurveillance;
+    private ImageButton btnStartSurveillance;
+    private Button btnLogout;//, btnStartSurveillance;
     private Switch switchMode;
 
     private String mode;
@@ -50,7 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         session = new SessionManager(getApplicationContext());
 
         btnLogout = (Button) findViewById(R.id.button_logout);
-        btnStartSurveillance = (Button) findViewById(R.id.button_surveillance);
+        //btnStartSurveillance = (Button) findViewById(R.id.button_surveillance);
+        btnStartSurveillance = (ImageButton) findViewById(R.id.btnStartSurveillance);
         switchMode = (Switch) findViewById(R.id.switch_mode);
         pDialog = new ProgressDialog(this);
 

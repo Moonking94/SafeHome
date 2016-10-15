@@ -19,12 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/stopstream"
+    <ImageButton
+        android:id="@+id/btnStopSurveillance"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="-50dp"
-        android:background="@android:color/darker_gray"
-        android:text="Icon here"/>
+        android:layout_marginTop="-70dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/stop_surveillance" />
+
 </LinearLayout>

@@ -6,11 +6,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 public class SurveillanceCameraActivity extends Activity implements View.OnClickListener {
 
-    private Button btnStopSurveillance;
+    private ImageButton btnStopSurveillance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class SurveillanceCameraActivity extends Activity implements View.OnClick
         setContentView(R.layout.activity_surveillance_camera);
 
         WebView streamView = (WebView) findViewById(R.id.streamview);
-        btnStopSurveillance = (Button)findViewById(R.id.stopstream);
+        btnStopSurveillance = (ImageButton)findViewById(R.id.btnStopSurveillance);
 
         displayHtmlText(getHtml(), streamView);
 

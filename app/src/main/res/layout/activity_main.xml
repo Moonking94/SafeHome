@@ -56,20 +56,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
+        <!--<Button
             android:id="@+id/button_surveillance"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:background="@android:color/darker_gray"
-            android:text="icon here" />
+            android:text="icon here" />-->
 
         <ImageButton
             android:id="@+id/btnStartSurveillance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/button_surveillance"
             android:background="@android:color/transparent"
             android:src="@drawable/start_surveillance" />
 

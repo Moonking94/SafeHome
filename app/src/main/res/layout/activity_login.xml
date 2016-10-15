@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="80dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/safehomelogo2"
+        android:src="@drawable/safehomelogo"
         android:id="@+id/imageView" />
 
     <!-- Email Label -->

@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -23,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,10 +133,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                                 user = new User(email, name, position);
                                 session.createLoginSession(user.getName(), user.getEmail(), user.getPosition());
-                            } else {
-                                user = null;
-                                String errorMsg = modeResponse.getString("error_msg");
-                                Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
                             }
 
                         } catch (JSONException e) {
@@ -146,8 +145,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error connecting to the server",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         }) {
             /**
@@ -177,8 +179,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
             session.createLoginSession(user.getName(), user.getEmail(), user.getPosition());
 
-            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(i);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
             finish();
 
         }else{
