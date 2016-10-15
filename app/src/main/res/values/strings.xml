@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">SafeHome</string>
+    <string name="button_login">Login</string>
+    <string name="button_logout">Logout</string>
+    <string name="email_text">Email</string>
+    <string name="password_text">Password</string>
+    <string name="mode_text">Mode</string>
+    <string name="mode_home">Home</string>
+    <string name="mode_away">Away</string>
+
+    <string name="raspberrypi_address">http://192.168.0.101</string>
+    <string name="stream_port">:8081</string>
+    <string name="stopSurveillance">/stopCamera.py</string>
+    <string name="retrieve_mode">/db_retrievemode.php</string>
+    <string name="update_mode">/db_updatemode.php</string>
+    <string name="retrieve_user">/db_retrieveuser.php</string>
+    <string name="initiate_surveillance">/initiate_surveillance.php</string>
+</resources>
