@@ -72,6 +72,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnLogout.setOnClickListener(this);
     }
 
+    /**
+     * Disable the user's from going back to the previous user's page
+     */
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     private void initializeUser() {
 
         session.checkLogin();

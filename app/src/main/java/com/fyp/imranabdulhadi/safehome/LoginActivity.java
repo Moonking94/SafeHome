@@ -25,16 +25,13 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that allows the user to login by entering their email/password.
  */
 public class LoginActivity extends Activity implements View.OnClickListener {
-
-    private static final String TAG = "LoginActivity";
 
     // Email and Password  EditText
     EditText txtEmail, txtPassword;
@@ -48,7 +45,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     // Session Manager Class
     SessionManager session;
 
+    // Store the user detail temporarily
     private User user;
+
+    // Display the Progress Box
     private ProgressDialog pDialog;
 
     @Override
@@ -83,37 +83,39 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Collect the values inside the text box and send them to the authentication method
+     * If there are none, an error message will be prompted out
+     */
     public void login() {
         String email = txtEmail.getText().toString();
         String password = txtPassword.getText().toString();
 
-        if(email.trim().length() > 0 && password.trim().length() > 0){
-            //
+        if (email.trim().length() > 0 && password.trim().length() > 0) {
             authenticate(email, password);
-            pDialog.show();
-
-            //
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    logging();
-                    pDialog.dismiss();
-                }
-            }, 3000);
-        }else{
+        } else {
             // user didn't entered username or password
             // Show alert asking him to enter the details
             alert.showAlertDialog(LoginActivity.this, "Login failed", "Please enter username and password", false);
         }
     }
 
+    /**
+     * Disable the user's ability to go back to the main page once log out
+     */
     @Override
     public void onBackPressed() {
         // Disable going back to the Main Activity
         moveTaskToBack(true);
     }
 
+    /**
+     * This functions is to authenticate the user credentials
+     * If it is correct, they will be redirect to the main page
+     * else the system will prompt error message
+     * @param email - user email
+     * @param password - user password
+     */
     private void authenticate(final String email, final String password) {
         String url = getApplicationContext().getString(R.string.raspberrypi_address) + getApplicationContext().getString(R.string.retrieve_user);
         StringRequest postRequest = new StringRequest(
@@ -123,32 +125,51 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onResponse(String response) {
                         try {
+
                             JSONObject modeResponse = new JSONObject(response);
                             boolean error = modeResponse.getBoolean("error");
 
                             if (!error) {
+                                pDialog.show();
+
                                 String email = modeResponse.getString("useremail");
                                 String name = modeResponse.getString("username");
                                 String position = modeResponse.getString("userposition");
 
                                 user = new User(email, name, position);
-                                session.createLoginSession(user.getName(), user.getEmail(), user.getPosition());
+                                session.createLoginSession(user.getName(), user.getEmail(),
+                                        user.getPosition());
+
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        logging();
+                                        pDialog.dismiss();
+                                    }
+                                }, 3000);
+                            } else {
+                                // Prompt error if username / password doesn't match
+                                alert.showAlertDialog(LoginActivity.this, "Login failed",
+                                        "Username/Password is incorrect", false);
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 }, new Response.ErrorListener() {
 
+            // Handle and prompt if there are any connection error
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                    Toast.makeText(getApplicationContext(),
-                            "Error connecting to the server",
-                            Toast.LENGTH_LONG).show();
+                Log.e("LoginActivity", "Login Error: " + error.getMessage());
+                if(error instanceof NoConnectionError) {
+                    alert.showAlertDialog(LoginActivity.this, "Login failed", "Error connecting to the server", false);
+                } else if (error instanceof TimeoutError) {
+                    alert.showAlertDialog(LoginActivity.this, "Login failed", "Connection time out", false);
                 }
             }
         }) {
@@ -175,17 +196,13 @@ public class LoginActivity extends Activity implements View.OnClickListener {
      * Function: Open the main activity class or show error to the user
      */
     private void logging() {
-        if(user!=null){
+        if (user != null) {
 
             session.createLoginSession(user.getName(), user.getEmail(), user.getPosition());
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
-
-        }else{
-            // username / password doesn't match
-            alert.showAlertDialog(LoginActivity.this, "Login failed", "Username/Password is incorrect", false);
         }
     }
 }
