@@ -13,7 +13,9 @@
         android:layout_width="159dp"
         android:layout_height="154dp"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/safehomelogo2"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/safehomelogo2"
         android:id="@+id/imageView" />
 
     <!-- Email Label -->
@@ -21,13 +23,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/email_text"
-        android:singleLine="true"
         android:layout_marginBottom="5dip"/>
 
     <!-- Email input text -->
     <EditText android:id="@+id/txtEmail"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
         android:layout_marginBottom="10dip"/>
 
     <!-- Password Label -->
@@ -42,8 +45,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dip"
-        android:password="true"
-        android:singleLine="true"/>
+        android:inputType="textPassword"
+        android:maxLines="1"/>
 
     <!-- Login button -->
     <Button android:id="@+id/button_login"
