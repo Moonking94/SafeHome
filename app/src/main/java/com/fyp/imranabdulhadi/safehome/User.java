@@ -9,9 +9,6 @@ public class User {
     private String name;
     private String position;
 
-    public User() {
-    }
-
     public User(String email, String name, String position) {
         this.email = email;
         this.name = name;
