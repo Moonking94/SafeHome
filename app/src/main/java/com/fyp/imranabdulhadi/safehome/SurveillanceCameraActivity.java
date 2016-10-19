@@ -7,6 +7,20 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Project the live stream using HTML code to the web view
@@ -64,10 +78,51 @@ public class SurveillanceCameraActivity extends Activity implements View.OnClick
     }
 
     /**
+     *  This function to stop the stream when the user press start surveillance button
+     */
+    private void stopStream() {
+        String url = getString(R.string.raspberrypi_address) + getString(R.string.surveillance);
+
+        StringRequest postRequest = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject streamResponse = new JSONObject(response);
+                            String status = streamResponse.getString("Status");
+                            Toast.makeText(getApplicationContext(), status, Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error: " + error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("StopSurveillance", "StopSurveillance");
+                return params;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(postRequest);
+    }
+
+    /**
      * Functions that stops the surveillance once the button is click
      */
     private void stopSurveillance() {
-        //String stopSurveillanceUrl = getString(R.string.raspberrypi_address) + getString(R.string.stopSurveillance);
+        stopStream();
         finish();
     }
 

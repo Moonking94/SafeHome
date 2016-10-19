@@ -73,7 +73,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         // Retrieve the system's mode from the server and initialize it on the application
         retrieveMode();
-        //initiateSurveillance();
 
         switchMode.setOnClickListener(this);
         btnStartSurveillance.setOnClickListener(this);
@@ -109,15 +108,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // Get the user's position from the session
         String position = user.get(SessionManager.KEY_POSITION);
 
-        if (position != null)
+        if (position != null) {
             if (!position.equals("Owner")) {
                 switchMode.setEnabled(false);
                 Toast.makeText(getApplicationContext(), "You are not authorized to change the system mode !", Toast.LENGTH_LONG).show();
             } else {
                 switchMode.setEnabled(true);
             }
-
-        ((TextView) findViewById(R.id.text_welcome)).setText(Html.fromHtml(name));
+            ((TextView) findViewById(R.id.text_welcome)).setText(Html.fromHtml(name));
+        }
     }
 
     /**
@@ -229,8 +228,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         queue.add(postRequest);
     }
 
-    private void initiateSurveillance() {
-        String url = getString(R.string.raspberrypi_address) + getString(R.string.initiate_surveillance);
+    /**
+     * This function to start the stream when the user press start surveillance button
+     */
+    private void startStream() {
+        String url = getString(R.string.raspberrypi_address) + getString(R.string.surveillance);
 
         StringRequest postRequest = new StringRequest(
                 Request.Method.POST,
@@ -238,7 +240,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                        try {
+                            JSONObject streamResponse = new JSONObject(response);
+                            String status = streamResponse.getString("Status");
+                            Toast.makeText(getApplicationContext(), status, Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -263,6 +273,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * Start the surveillance activity
      */
     private void startSurveillance() {
+        startStream();
         Intent intent = new Intent(this, SurveillanceCameraActivity.class);
         startActivity(intent);
     }
