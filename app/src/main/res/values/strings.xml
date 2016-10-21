@@ -19,7 +19,6 @@
     <string name="surveillance">/surveillance.php</string>
 
     <!-- Content Description -->
-    <string name="logoDesc">SafeHome</string>
     <string name="startSurveillanceDesc">Start surveillance on the front door</string>
     <string name="stopSurveillanceDesc">Stop surveillance on the front door</string>
 </resources>
