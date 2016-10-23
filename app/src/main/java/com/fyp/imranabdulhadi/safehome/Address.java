@@ -8,13 +8,15 @@ public class Address {
     private int addressId;
     private String addressIp;
     private String addressDesc;
+    private String addressChecked;
 
     public Address(){}
 
-    public Address(int addressId, String addressIp, String addressDesc) {
+    public Address(int addressId, String addressIp, String addressDesc, String addressChecked) {
         this.addressId = addressId;
         this.addressIp = addressIp;
         this.addressDesc = addressDesc;
+        this.addressChecked = addressChecked;
     }
 
     public int getAddressId() {
@@ -39,5 +41,13 @@ public class Address {
 
     public void setAddressDesc(String addressDesc) {
         this.addressDesc = addressDesc;
+    }
+
+    public String getAddressChecked() {
+        return addressChecked;
+    }
+
+    public void setAddressChecked(String addressChecked) {
+        this.addressChecked = addressChecked;
     }
 }

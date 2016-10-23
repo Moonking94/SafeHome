@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Imran Abdulhadi on 10/23/2016.
  */
 
-public class DBHandler extends SQLiteOpenHelper {
+public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Database Version
     private static final int DATABASE_VERSION = 1;
@@ -28,15 +28,16 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "address_id";
     private static final String KEY_ADDRESS = "address_ip";
     private static final String KEY_DESC = "address_desc";
+    private static final String KEY_CHECKED = "address_checked";
 
-    public DBHandler(Context context) {
+    public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_ADDRESS + "(" + KEY_ID + "INTEGER PRIMARY KEY," + KEY_ADDRESS
-                + " TEXT," + KEY_DESC + " TEXT" + ")";
+                + " TEXT," + KEY_DESC + " TEXT," + KEY_CHECKED + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -58,6 +59,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_ADDRESS, address.getAddressIp());
         values.put(KEY_DESC, address.getAddressDesc());
+        values.put(KEY_CHECKED, address.getAddressChecked());
 
         // Insert row
         db.insert(TABLE_ADDRESS, null, values);
@@ -76,7 +78,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(addressIP)}, null, null, null, null);
         if(cursor!=null)
             cursor.moveToFirst();
-        Address address = new Address(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2));
+        Address address = new Address(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3));
 
         cursor.close();
         return address;
@@ -100,6 +102,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 address.setAddressId(Integer.parseInt(cursor.getString(0)));
                 address.setAddressIp(cursor.getString(1));
                 address.setAddressDesc(cursor.getString(2));
+                address.setAddressChecked(cursor.getString(3));
 
                 addressList.add(address);
             } while(cursor.moveToNext());
@@ -131,10 +134,10 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ADDRESS, address.getAddressIp());
         values.put(KEY_DESC, address.getAddressDesc());
+        values.put(KEY_CHECKED, address.getAddressChecked());
 
-        return db.update(TABLE_ADDRESS, values, KEY_ID + " = ?", new String[]{String.valueOf(address.getAddressId())});
+        return db.update(TABLE_ADDRESS, values, KEY_ADDRESS + " = ?", new String[]{String.valueOf(address.getAddressIp())});
     }
 
     /**
