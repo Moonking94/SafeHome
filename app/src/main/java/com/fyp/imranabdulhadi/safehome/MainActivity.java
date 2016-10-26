@@ -8,9 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -58,6 +55,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     // Store the user's detail temporarily
     private HashMap<String, String> user;
 
+    /*private static final int RESULT_SETTINGS = 1;
+
+    private String piAddress;*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +72,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switchMode = (Switch) findViewById(R.id.switch_mode);
         pDialog = new ProgressDialog(this);
 
+        /*piAddress = getPiAddress();
+
+        if(piAddress.isEmpty() || piAddress == null) {
+            Toast.makeText(getApplicationContext(), "Please set pi address", Toast.LENGTH_LONG).show();
+        }*/
+
         // Initialize the user's detail
         initializeUser();
 
@@ -82,7 +89,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnLogout.setOnClickListener(this);
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    /*public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
@@ -91,16 +98,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addAddress:
-
-                return true;
-            case R.id.changeAddress:
-
+            case R.id.action_settings:
+                //Intent intent = new Intent(this, Settings.class);
+                //startActivityForResult(intent, RESULT_SETTINGS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case RESULT_SETTINGS:
+                piAddress = getPiAddress();
+                break;
+        }
+    }
+
+    private String getPiAddress() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        return sharedPref.getString("prefPiAddress", "NULL");
+    }/*
 
     /**
      * Disable the user's from going back to the previous user's page
@@ -179,7 +201,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                Toast.makeText(getApplicationContext(), "Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Error: Can't connect to server", Toast.LENGTH_SHORT).show();
                                 if (pDialog.isShowing())
                                     pDialog.dismiss();
                             }
