@@ -8,6 +8,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -43,7 +46,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     // Layout widgets
     private ImageButton btnStartSurveillance;
-    private Button btnLogout;
+    //private Button btnLogout;
     private Switch switchMode;
 
     // Store the system's current mode
@@ -67,7 +70,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // Session class instance
         session = new SessionManager(getApplicationContext());
 
-        btnLogout = (Button) findViewById(R.id.button_logout);
+        //btnLogout = (Button) findViewById(R.id.button_logout);
         btnStartSurveillance = (ImageButton) findViewById(R.id.btnStartSurveillance);
         switchMode = (Switch) findViewById(R.id.switch_mode);
         pDialog = new ProgressDialog(this);
@@ -86,10 +89,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         switchMode.setOnClickListener(this);
         btnStartSurveillance.setOnClickListener(this);
-        btnLogout.setOnClickListener(this);
+        //btnLogout.setOnClickListener(this);
     }
 
-    /*public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
@@ -98,15 +101,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                //Intent intent = new Intent(this, Settings.class);
-                //startActivityForResult(intent, RESULT_SETTINGS);
+            /*case R.id.action_settings:
+                Intent intent = new Intent(this, Settings.class);
+                startActivityForResult(intent, RESULT_SETTINGS);
+                return true;*/
+            case R.id.action_aboutus:
+                //Intent intent = new Intent(this, AboutUs.class);
+                //startActivity(intent);
+                return true;
+            case R.id.action_logout:
+                session.logoutUser();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -122,7 +133,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         return sharedPref.getString("prefPiAddress", "NULL");
-    }/*
+    }*/
 
     /**
      * Disable the user's from going back to the previous user's page
@@ -160,7 +171,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             } else {
                 switchMode.setEnabled(true);
             }
-            ((TextView) findViewById(R.id.text_welcome)).setText(Html.fromHtml(name));
+            ((TextView) findViewById(R.id.text_welcome)).setText(Html.fromHtml("Welcome, " + name));
         }
     }
 
@@ -331,8 +342,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (v == btnStartSurveillance) {
             startSurveillance();
         }
-        if (v == btnLogout) {
+        /*if (v == btnLogout) {
             session.logoutUser();
-        }
+        }*/
     }
 }
