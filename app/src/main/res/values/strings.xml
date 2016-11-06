@@ -9,12 +9,15 @@
     <string name="mode_home">Home</string>
     <string name="mode_away">Away</string>
 
-    <!-- Server address and script name -->
+    <!-- Server address and script name
+    <string name="raspberrypi_address">http://192.168.43.215</string>-->
     <string name="raspberrypi_address">http://192.168.0.107</string>
     <string name="stream_port">:8081</string>
     <string name="stopSurveillance">/stopCamera.py</string>
     <string name="retrieve_mode">/db_retrievemode.php</string>
     <string name="update_mode">/db_updatemode.php</string>
+    <string name="retrieve_doorlatch">/db_retrievelatchstatus.php</string>
+    <string name="update_doorlatch">/db_updatelatchstatus.php</string>
     <string name="retrieve_user">/db_retrieveuser.php</string>
     <string name="surveillance">/surveillance.php</string>
 
@@ -29,5 +32,7 @@
 
     <!-- Content Description -->
     <string name="startSurveillanceDesc">Start surveillance on the front door</string>
+    <string name="openLatchDesc">Open the latch that is preventing the door from opening</string>
+    <string name="closeLatchDesc">Close the latch that will prevent the door from opening</string>
     <string name="stopSurveillanceDesc">Stop surveillance on the front door</string>
 </resources>

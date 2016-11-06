@@ -45,12 +45,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private SessionManager session;
 
     // Layout widgets
-    private ImageButton btnStartSurveillance;
+    private ImageButton btnStartSurveillance, btnDoorLatch;
     //private Button btnLogout;
     private Switch switchMode;
 
     // Store the system's current mode
-    private String mode;
+    private String mode, latchStatus = "Unlock";
 
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -72,6 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         //btnLogout = (Button) findViewById(R.id.button_logout);
         btnStartSurveillance = (ImageButton) findViewById(R.id.btnStartSurveillance);
+        btnDoorLatch = (ImageButton) findViewById(R.id.btnDoorLatch);
         switchMode = (Switch) findViewById(R.id.switch_mode);
         pDialog = new ProgressDialog(this);
 
@@ -87,8 +88,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // Retrieve the system's mode from the server and initialize it on the application
         retrieveMode();
 
+        // Retrieve the door's status from the server and initialize it on the application
+        retrieveLatch();
+
         switchMode.setOnClickListener(this);
         btnStartSurveillance.setOnClickListener(this);
+        btnDoorLatch.setOnClickListener(this);
         //btnLogout.setOnClickListener(this);
     }
 
@@ -285,6 +290,121 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     /**
+     * Retrieve the current latch status from the server and then initialize it in the system
+     */
+    private void retrieveLatch() {
+        String url = getApplicationContext().getString(R.string.raspberrypi_address) + getApplicationContext().getString(R.string.retrieve_doorlatch);
+        try {
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            Boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+            if (isConnected) {
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
+                        new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                if (!pDialog.isShowing())
+                                    pDialog.show();
+
+                                try {
+                                    JSONObject modeResponse = (JSONObject) response.get(0);
+
+                                    latchStatus = modeResponse.getString("currentlatch");
+                                    if (latchStatus.equals("Lock")) {
+                                        btnDoorLatch.setImageResource(R.drawable.close_latch);
+                                        btnDoorLatch.setContentDescription(getString(R.string.closeLatchDesc));
+                                    } else {
+                                        btnDoorLatch.setImageResource(R.drawable.open_latch);
+                                        btnDoorLatch.setContentDescription(getString(R.string.openLatchDesc));
+                                    }
+
+                                    if (pDialog.isShowing())
+                                        pDialog.dismiss();
+                                } catch (Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Error:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
+                                Toast.makeText(getApplicationContext(), "Error: Can't connect to server", Toast.LENGTH_SHORT).show();
+                                if (pDialog.isShowing())
+                                    pDialog.dismiss();
+                            }
+                        });
+
+                RequestQueue queue = Volley.newRequestQueue(this);
+                queue.add(jsonArrayRequest);
+            } else {
+                Toast.makeText(getApplication(), "Network is NOT available",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getApplication(),
+                    "Error reading latch status:" + e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Update the status of the latch on to the server, and then lock/unlock the latch of the door.
+     */
+    private void updateLatch() {
+        String url = getApplicationContext().getString(R.string.raspberrypi_address) + getApplicationContext().getString(R.string.update_doorlatch);
+
+        if (latchStatus.equals("Lock")) {
+            latchStatus = "Unlock";
+            btnDoorLatch.setImageResource(R.drawable.open_latch);
+            btnDoorLatch.setContentDescription(getString(R.string.openLatchDesc));
+        } else {
+            latchStatus = "Lock";
+            btnDoorLatch.setImageResource(R.drawable.close_latch);
+            btnDoorLatch.setContentDescription(getString(R.string.closeLatchDesc));
+        }
+
+        StringRequest postRequest = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject latchResponse = new JSONObject(response);
+                            String newLatchStatus = latchResponse.getString("Info");
+
+                            Toast.makeText(getApplicationContext(), newLatchStatus, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "JSON Error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("MainActivity", "Login Error: " + error.getMessage());
+                        if (error instanceof NoConnectionError) {
+                            Toast.makeText(getApplicationContext(), "Error connecting to the server", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(getApplicationContext(), "Connection time out", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("latchStatus", latchStatus);
+                return params;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(postRequest);
+    }
+
+    /**
      * This function to start the stream when the user press start surveillance button
      */
     private void startStream() {
@@ -341,6 +461,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         if (v == btnStartSurveillance) {
             startSurveillance();
+        }
+        if (v == btnDoorLatch) {
+            updateLatch();
         }
         /*if (v == btnLogout) {
             session.logoutUser();
