@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Switch switchMode;
 
     // Store the system's current mode
-    private String mode, latchStatus = "Unlock";
+    private String mode, latchStatus;
 
     // Progress Dialog
     private ProgressDialog pDialog;
