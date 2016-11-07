@@ -217,7 +217,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                Toast.makeText(getApplicationContext(), "Error: Can't connect to server", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Error: Can't connect to server. Unable to retrieve mode status !", Toast.LENGTH_SHORT).show();
                                 if (pDialog.isShowing())
                                     pDialog.dismiss();
                             }
@@ -226,7 +226,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 RequestQueue queue = Volley.newRequestQueue(this);
                 queue.add(jsonArrayRequest);
             } else {
-                Toast.makeText(getApplication(), "Network is NOT available",
+                Toast.makeText(getApplication(), "Network is NOT available. Unable to retrieve mode status !",
                         Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -328,7 +328,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                Toast.makeText(getApplicationContext(), "Error: Can't connect to server", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Error: Can't connect to server.  Unable to retrieve latch status", Toast.LENGTH_SHORT).show();
                                 if (pDialog.isShowing())
                                     pDialog.dismiss();
                             }
@@ -337,7 +337,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 RequestQueue queue = Volley.newRequestQueue(this);
                 queue.add(jsonArrayRequest);
             } else {
-                Toast.makeText(getApplication(), "Network is NOT available",
+                Toast.makeText(getApplication(), "Network is NOT available, Unable to retrieve latch status !",
                         Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -430,7 +430,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Error: " + error.toString(), Toast.LENGTH_LONG).show();
+                        if(error instanceof NoConnectionError) {
+                            Toast.makeText(getApplicationContext(), "Error connecting to the server", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(getApplicationContext(), "Connection time out", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }) {
             @Override

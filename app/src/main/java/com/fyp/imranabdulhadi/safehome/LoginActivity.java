@@ -96,7 +96,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         } else {
             // user didn't entered username or password
             // Show alert asking him to enter the details
-            alert.showAlertDialog(LoginActivity.this, "Login failed", "Please enter username and password", false);
+            alert.showAlertDialog(LoginActivity.this, "Login failed", "Please enter email and password", false);
         }
     }
 
@@ -151,7 +151,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                             } else {
                                 // Prompt error if username / password doesn't match
                                 alert.showAlertDialog(LoginActivity.this, "Login failed",
-                                        "Username/Password is incorrect", false);
+                                        "Email/Password is incorrect", false);
                             }
 
                         } catch (JSONException e) {
